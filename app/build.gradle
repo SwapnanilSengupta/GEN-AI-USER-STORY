@@ -1,0 +1,91 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    //  id 'java'
+    //  id 'com.github.johnrengelman.shadow' version '8.1.1' // Use the latest version
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    // Logging library
+    implementation 'org.slf4j:slf4j-jdk14:2.0.16'
+
+    // This dependency is used by the application.
+    implementation 'dev.langchain4j:langchain4j:1.0.0-alpha1'
+    implementation 'dev.langchain4j:langchain4j-vertex-ai:1.0.0-alpha1'
+    implementation 'dev.langchain4j:langchain4j-vertex-ai-gemini:1.0.0-alpha1'
+    implementation 'dev.langchain4j:langchain4j-document-parser-apache-pdfbox:1.0.0-alpha1'
+    implementation 'dev.langchain4j:langchain4j-core:0.30.0'
+
+
+    // Gemma via Ollama and TestContainers
+    implementation 'dev.langchain4j:langchain4j-ollama:1.0.0-alpha1'
+    implementation 'org.testcontainers:ollama:1.20.4'
+
+    //implementation 'dev.langchain4j:langchain4j-pgvector:0.35.0'
+    implementation 'dev.langchain4j:langchain4j-pgvector:0.30.0'
+    implementation 'dev.langchain4j:langchain4j:0.29.0'
+
+    //implementation"dev.langchain4j:langchain4j-hugging-face:0.36.2"
+
+    implementation 'org.apache.poi:poi:5.4.1'
+    implementation 'org.apache.poi:poi-ooxml:5.4.1'
+
+    implementation 'org.postgresql:postgresql:42.7.3'
+    implementation 'com.google.cloud.sql:postgres-socket-factory:1.10.0'
+    implementation 'org.slf4j:slf4j-api:2.0.12' 
+    implementation 'ch.qos.logback:logback-classic:1.5.6' 
+    //implementation 'dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.0.0-beta3'
+    implementation 'com.google.cloud:google-cloud-functions:2.62.0'
+    implementation 'com.google.cloud.functions:functions-framework-api:1.1.4'
+    implementation 'com.zaxxer:HikariCP:6.3.0'
+    implementation 'dev.langchain4j:langchain4j-pgvector:0.31.0'
+    
+    
+
+}
+
+testing {
+    suites {
+        // Configure the built-in test suite
+        test {
+            // Use JUnit Jupiter test framework
+            useJUnitJupiter('5.11.4')
+        }
+    }
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-parameters'
+}
+
+application {
+    mainClass = providers.systemProperty('javaMainClass')
+                         .orElse('gemini.workshop.App')
+}
+
+// shadowJar {
+//     archiveBaseName.set('your-app-name') // Optional: Set the base name of the JAR
+//     manifest {
+//         attributes 'Main-Class': 'gemini.workshop.HelloWorld' // Specify your main class
+//     }
+//     zip64 true
+// }
+
+// shadowJar {
+//     archiveBaseName.set('function') // Optional: Rename the output JAR
+//     archiveClassifier.set('')
+//     zip64 true
+// }
+

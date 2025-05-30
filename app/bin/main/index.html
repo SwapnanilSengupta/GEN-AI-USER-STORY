@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentokil QA GPT</title>
+    <style>
+        body {
+            background-image: url('https://www.rentokil.com/dam/jcr:900d9fd8-b7d1-4c53-a468-1afa1f3e6c08/image-banner-stock-main-rentokil-colleague-glo-singapore-viehical-van-man.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            /* Optional: keeps the background fixed during scrolling */
+            background-color: #e9ecef;
+            /* Fallback color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.7);
+            /* More transparent white background */
+            padding: 60px;
+            border-radius: 16px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            width: 72%;
+            /* Reduced width to 80% of 90% */
+            max-width: 680px;
+            /* Reduced max-width to 80% of 850px */
+            text-align: center;
+            margin-top: 20px;
+            /* Added margin to avoid overlap with logo */
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            /* Ensure logo is above other content */
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+            opacity: 0.7;
+            /* Make the logo 70% transparent */
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        #questionInput {
+            width: calc(100% - 36px);
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 35px;
+            border: 1px solid #ced4da;
+            /* Removed the black border */
+            border-radius: 10px;
+            font-size: 1.2em;
+            white-space: pre-wrap;
+            min-height: 160px;
+            /* Made the input box a bit bigger */
+            box-sizing: border-box;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #questionInput:focus {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        #responseOutput {
+            width: calc(100% - 36px);
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            /* Removed the black border */
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            font-size: 1.1em;
+            color: #495057;
+            text-align: left;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 380px;
+            /* Made the output box a bit bigger */
+            box-sizing: border-box;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #responseOutput:focus {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            justify-content: center;
+        }
+
+        button {
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #goButton {
+            background-color: #007bff;
+        }
+
+        #goButton:hover {
+            background-color: #0056b3;
+        }
+
+        #clearButton {
+            background-color: #dc3545;
+        }
+
+        #clearButton:hover {
+            background-color: #c82333;
+        }
+
+        #responseArea {
+            margin-top: 30px;
+            display: none;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 15px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #downloadLinkContainer {
+            margin-top: 30px;
+            display: none;
+            text-align: center;
+        }
+
+        #downloadLinkText,
+        #downloadLinkExcel {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+            margin: 0 10px;
+        }
+
+        #downloadLinkText {
+            background-color: #17a2b8;
+        }
+
+        #downloadLinkText:hover,
+        #downloadLinkExcel:hover {
+            transform: scale(1.05);
+        }
+
+        #downloadLinkText:hover {
+            background-color: #138496;
+        }
+
+        #downloadLinkExcel:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo-container">
+        <img src="https://s3-symbol-logo.tradingview.com/rentokil-initial--600.png" alt="Rentokil Initial Logo"
+            class="logo">
+    </div>
+    <div class="container">
+        <h1>Enter User Story to Generate Test Cases</h1>
+        <textarea id="questionInput" placeholder="Type your User Story here..." style="resize: vertical;"></textarea>
+        <div class="button-container">
+            <button id="goButton" onclick="askQuestion()">Generate</button>
+            <button id="clearButton" onclick="clearText()">Clear</button>
+        </div>
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Generating Test Cases...</p>
+        </div>
+        <div id="responseArea">
+            <h2>Generated Test Cases:</h2>
+            <textarea id="responseOutput" placeholder="Test Cases will appear here..." readonly
+                style="height: 250px;"></textarea>
+        </div>
+        <div id="downloadLinkContainer">
+            <a id="downloadLinkText" href="/download/RAG_multiple.txt" download="test_cases.txt">Download as
+                Text</a>
+            <a id="downloadLinkExcel" href="/download/RAG_multiple.xlsx" download="test_cases.xlsx">Download
+                as Excel</a>
+        </div>
+    </div>
+
+    <script>
+        const questionInput = document.getElementById('questionInput');
+        const responseArea = document.getElementById('responseArea');
+        const responseOutput = document.getElementById('responseOutput');
+        const downloadLinkContainer = document.getElementById('downloadLinkContainer');
+        const loading = document.getElementById('loading');
+
+        // Initially hide the response area and download links
+        responseArea.style.display = 'none';
+        downloadLinkContainer.style.display = 'none';
+        loading.style.display = 'none';
+
+        questionInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                this.value += '\n';
+                event.preventDefault();
+                // Optionally trigger GO on Enter:
+                // document.getElementById('goButton').click();
+            }
+        });
+
+        function askQuestion() {
+            const question = questionInput.value.trim();
+
+            if (question === "") {
+                responseOutput.value = "Please enter a User Story!";
+                responseArea.style.display = 'block';
+                downloadLinkContainer.style.display = 'none';
+                loading.style.display = 'none';
+                return;
+            }
+
+            responseOutput.value = "";
+            responseArea.style.display = 'none';
+            downloadLinkContainer.style.display = 'none';
+            loading.style.display = 'block';
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'question=' + encodeURIComponent(question)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    loading.style.display = 'none';
+                    responseOutput.value = data;
+                    responseArea.style.display = 'block';
+                    downloadLinkContainer.style.display = 'block';
+                })
+                .catch(error => {
+                    loading.style.display = 'none';
+                    responseOutput.value = 'Error: ' + error;
+                    responseArea.style.display = 'block';
+                    downloadLinkContainer.style.display = 'block';
+                });
+        }
+
+        function clearText() {
+            questionInput.value = "";
+            responseOutput.value = "";
+            responseArea.style.display = 'none';
+            downloadLinkContainer.style.display = 'none';
+            loading.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
