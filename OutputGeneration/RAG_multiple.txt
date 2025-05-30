@@ -19,93 +19,92 @@ If tech has click on Print + Email both features should process.
 If tech clicks print and not email then only print option 
 
 If tech doesn't select option then do not send anything to customer.
-Test Cases: ## Test Cases for Service Receipt Email Delivery
+Test Cases: ## Test Cases for Email Receipt Delivery After Technician Visit
 
-The following test cases validate the functionality described in the user story: "As a technician, when I have completed a visit and I have chosen the email checkbox from the UI pop-up, I want the POS to be promptly delivered to the email address entered so that I can ensure the customer receives their service receipt."
+The following test cases validate the email delivery functionality for service receipts after a technician completes a visit.  Note that "prompt" delivery will need a defined timeframe for pass/fail criteria (e.g., within 5 minutes).
 
 **Test Case 1: Successful Email Delivery (Single Email)**
 
 * **Test Case ID:** TC_001
 * **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, enter a valid email address.
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, enter a valid email address (e.g., testuser@example.com).
     3. Select the "Email" checkbox.
     4. Click "Submit" or equivalent button.
-* **Expected Output:**  A service receipt is sent to the entered email address within a reasonable timeframe (e.g., within 5 minutes).  The application provides positive feedback (e.g., a success message).
-
+* **Expected Output:** A service receipt is successfully sent to the entered email address within [defined timeframe, e.g., 5 minutes].  Verify receipt content.
 
 **Test Case 2: Successful Email Delivery (Multiple Emails)**
 
 * **Test Case ID:** TC_002
 * **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, enter three valid email addresses, separated by commas or appropriate delimiters (as per application design).
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, enter three valid email addresses, separated as per application requirements (e.g., comma separated, or multiple fields).
     3. Select the "Email" checkbox.
     4. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is sent to all three entered email addresses within a reasonable timeframe. The application provides positive feedback.
+* **Expected Output:** A service receipt is successfully sent to all three entered email addresses within [defined timeframe]. Verify receipt content for each email.
 
-
-**Test Case 3: Email Delivery Failure (Invalid Email Address)**
+**Test Case 3:  Print and Email Functionality**
 
 * **Test Case ID:** TC_003
 * **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, enter an invalid email address (e.g., missing "@" symbol, incorrect domain).
-    3. Select the "Email" checkbox.
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, enter a valid email address.
+    3. Select both the "Print" and "Email" checkboxes (or equivalent options).
     4. Click "Submit" or equivalent button.
-* **Expected Output:** The application displays an appropriate error message indicating the invalid email address.  No email is sent.  (Consider logging the error for further investigation).
+* **Expected Output:** A service receipt is printed locally, AND a service receipt is successfully sent to the entered email address within [defined timeframe]. Verify receipt content for both print and email.
 
-
-**Test Case 4: Print and Email Functionality**
+**Test Case 4: Print Only Functionality**
 
 * **Test Case ID:** TC_004
 * **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, enter a valid email address.
-    3. Select both the "Print" and "Email" checkboxes (if applicable).
-    4. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is printed and sent to the entered email address within a reasonable timeframe.  The application provides positive feedback.
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, select only the "Print" checkbox.  Do not enter an email address.
+    3. Click "Submit" or equivalent button.
+* **Expected Output:** A service receipt is printed locally. No email is sent.
 
-
-**Test Case 5: Print Only Functionality**
+**Test Case 5: No Options Selected**
 
 * **Test Case ID:** TC_005
 * **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, select only the "Print" checkbox.
-    3. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is printed. No email is sent.
-
-
-**Test Case 6: No Options Selected**
-
-* **Test Case ID:** TC_006
-* **Test Case Steps:**
-    1. Complete a visit in the application.
-    2. In the post-visit pop-up, do not select any checkboxes ("Print" or "Email").
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, do not select any checkboxes (Print or Email).  Do not enter an email address.
     3. Click "Submit" or equivalent button.
 * **Expected Output:** No service receipt is printed or emailed.
 
+**Test Case 6: Invalid Email Address**
 
-**Test Case 7: Email Checkbox Selectability**
+* **Test Case ID:** TC_006
+* **Test Case Steps:**
+    1. Complete a visit within the application.
+    2. In the post-visit pop-up, enter an invalid email address (e.g., testuser).
+    3. Select the "Email" checkbox.
+    4. Click "Submit" or equivalent button.
+* **Expected Output:** An appropriate error message is displayed, indicating the invalid email address.  No email is sent.  (Consider logging this event for later analysis).  Visit completion may or may not be blocked depending on requirements.
+
+**Test Case 7:  Email Checkbox Selectability**
 
 * **Test Case ID:** TC_007
 * **Test Case Steps:**
-    1. Complete a visit in the application.
+    1. Complete a visit within the application.
     2. Attempt to select the "Email" checkbox in the post-visit pop-up.
-* **Expected Output:** The "Email" checkbox can be successfully selected.
+* **Expected Output:** The "Email" checkbox is selectable.
 
-
-**Test Case 8:  No Email Sent (Multiple Visits, No Duplicates)**  (Addresses TC-4759)
+**Test Case 8: Multiple Visits - No Duplication** (Addresses TC-4759)
 
 * **Test Case ID:** TC_008
 * **Test Case Steps:**
-    1. Complete three visits.
+    1. Complete three separate visits.
     2. For each visit, enter a different valid email address and select the "Email" checkbox.
-* **Expected Output:** Three separate emails are sent, one for each visit, containing the respective service receipt.  No emails are duplicated.
+* **Expected Output:** Three separate emails are sent, one for each visit, without any duplication of receipts.
 
+**Test Case 9: Two-Factor Authentication (2FA)**  (Addresses part of TC_59)
 
+* **Test Case ID:** TC_009
+* **Test Case Steps:**
+    1. Install the application.
+    2. Attempt to log in.
+* **Expected Output:** The application displays a 2FA screen requesting an OTP sent to the registered email address.
 
-These test cases cover the core functionality and edge cases outlined in the user story.  Additional test cases might be needed depending on the application's specific design and error handling. Remember to document the test environment and any relevant setup information for each test case.
+**Note:**  These test cases assume a user interface with checkboxes for "Print" and "Email". Adapt the steps as necessary to match your actual UI.  The bracketed information should be filled in with specific values and timings relevant to your system.  Furthermore, consider adding test cases to handle edge cases like network interruptions during email sending.
 
 ----------------------------------------------------
