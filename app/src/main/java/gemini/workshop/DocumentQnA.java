@@ -45,8 +45,8 @@ public class DocumentQnA {
         ChatLanguageModel model = VertexAiGeminiChatModel.builder()
                 .project("ai-testautomation-production")
                 .location("us-central1")
-                .modelName("gemini-1.5-flash-002")
-                .maxOutputTokens(2500)
+                .modelName(getProperty("Vertex.ChatModel.Latest"))
+                .maxOutputTokens(60000)
                 .build();
 
         // ======== Content Retriever from EmbeddingStore ========

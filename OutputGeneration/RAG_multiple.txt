@@ -19,92 +19,544 @@ If tech has click on Print + Email both features should process.
 If tech clicks print and not email then only print option 
 
 If tech doesn't select option then do not send anything to customer.
-Test Cases: ## Test Cases for Email Receipt Delivery After Technician Visit
 
-The following test cases validate the email delivery functionality for service receipts after a technician completes a visit.  Note that "prompt" delivery will need a defined timeframe for pass/fail criteria (e.g., within 5 minutes).
 
-**Test Case 1: Successful Email Delivery (Single Email)**
+and try to generate java selenium code for those testcases too
+Test Cases: Okay, let's break down the user story and generate comprehensive test cases, followed by the Java Selenium code for some of the key scenarios.
 
-* **Test Case ID:** TC_001
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, enter a valid email address (e.g., testuser@example.com).
-    3. Select the "Email" checkbox.
-    4. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is successfully sent to the entered email address within [defined timeframe, e.g., 5 minutes].  Verify receipt content.
+---
 
-**Test Case 2: Successful Email Delivery (Multiple Emails)**
+### Understanding the User Story and Requirements:
 
-* **Test Case ID:** TC_002
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, enter three valid email addresses, separated as per application requirements (e.g., comma separated, or multiple fields).
-    3. Select the "Email" checkbox.
-    4. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is successfully sent to all three entered email addresses within [defined timeframe]. Verify receipt content for each email.
+**Core Functionality:** Sending service receipts (POS) via email after completing a visit, with user choice.
 
-**Test Case 3:  Print and Email Functionality**
+**Key Requirements / Constraints:**
 
-* **Test Case ID:** TC_003
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, enter a valid email address.
-    3. Select both the "Print" and "Email" checkboxes (or equivalent options).
-    4. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is printed locally, AND a service receipt is successfully sent to the entered email address within [defined timeframe]. Verify receipt content for both print and email.
+1.  **Email Checkbox Selectable:** The UI pop-up *must* have a selectable email checkbox.
+2.  **Prompt Delivery:** Receipt sent *promptly* to the entered email.
+3.  **Entered Email:** Sent to the email address *entered by the technician*.
+4.  **Multiple Emails:** Tech can add *up to 3* emails.
+5.  **Print + Email:** If both selected, both actions process.
+6.  **Print Only:** If only print selected, only print processes.
+7.  **No Option:** If no option selected, nothing sent to customer.
+8.  **Contextual Information:**
+    *   Feature is incomplete, needs QA.
+    *   Specific examples provided:
+        *   `TC-4759`: Email options not duplicated when processing *multiple visits*.
+        *   `TC-61`: Verify *customer email* (if any) pre-populated in the UI.
 
-**Test Case 4: Print Only Functionality**
+---
 
-* **Test Case ID:** TC_004
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, select only the "Print" checkbox.  Do not enter an email address.
-    3. Click "Submit" or equivalent button.
-* **Expected Output:** A service receipt is printed locally. No email is sent.
+### Test Cases Generation
 
-**Test Case 5: No Options Selected**
+I'll categorize the test cases for clarity.
 
-* **Test Case ID:** TC_005
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, do not select any checkboxes (Print or Email).  Do not enter an email address.
-    3. Click "Submit" or equivalent button.
-* **Expected Output:** No service receipt is printed or emailed.
+**Pre-condition for all test cases:**
+*   A technician is logged into the application.
+*   A service visit has been completed (or is in the final step where the pop-up appears).
+*   The UI pop-up for service receipt options is displayed.
 
-**Test Case 6: Invalid Email Address**
+---
 
-* **Test Case ID:** TC_006
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. In the post-visit pop-up, enter an invalid email address (e.g., testuser).
-    3. Select the "Email" checkbox.
-    4. Click "Submit" or equivalent button.
-* **Expected Output:** An appropriate error message is displayed, indicating the invalid email address.  No email is sent.  (Consider logging this event for later analysis).  Visit completion may or may not be blocked depending on requirements.
+#### A. Positive Scenarios (Happy Path & Expected Behavior)
 
-**Test Case 7:  Email Checkbox Selectability**
+**TC-001: Validate sending service receipt via email to a single address.**
+*   **Steps:**
+    1.  Ensure the "Email Receipt" checkbox is visible and enabled on the UI pop-up.
+    2.  Click on the "Email Receipt" checkbox.
+    3.  In the email input field, enter a valid email address (e.g., `customer1@example.com`).
+    4.  Click the "Send" / "Complete Visit" / "Submit" button on the pop-up.
+    5.  Observe the UI behavior (pop-up closes, confirmation message appears).
+    6.  *Manually/Automated Check*: Verify that `customer1@example.com` promptly receives the service receipt email with the correct content.
+*   **Expected Output:**
+    *   "Email Receipt" checkbox is selectable.
+    *   Email address is successfully entered.
+    *   Pop-up closes or shows success message.
+    *   A service receipt email is promptly delivered to `customer1@example.com`.
+    *   The content of the email matches the service details.
 
-* **Test Case ID:** TC_007
-* **Test Case Steps:**
-    1. Complete a visit within the application.
-    2. Attempt to select the "Email" checkbox in the post-visit pop-up.
-* **Expected Output:** The "Email" checkbox is selectable.
+**TC-002: Validate sending service receipt via email to two addresses.**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  In the email input fields, enter two valid email addresses (e.g., `customer1@example.com`, `customer2@example.com`).
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+    4.  *Manually/Automated Check*: Verify that both `customer1@example.com` and `customer2@example.com` promptly receive the service receipt email.
+*   **Expected Output:**
+    *   Email addresses are successfully entered.
+    *   Pop-up closes or shows success message.
+    *   Service receipt email is promptly delivered to *both* `customer1@example.com` and `customer2@example.com`.
 
-**Test Case 8: Multiple Visits - No Duplication** (Addresses TC-4759)
+**TC-003: Validate sending service receipt via email to three addresses.**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  In the email input fields, enter three valid email addresses (e.g., `customer1@example.com`, `customer2@example.com`, `customer3@example.com`).
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+    4.  *Manually/Automated Check*: Verify that all three email addresses promptly receive the service receipt email.
+*   **Expected Output:**
+    *   Email addresses are successfully entered.
+    *   Pop-up closes or shows success message.
+    *   Service receipt email is promptly delivered to *all three* specified email addresses.
 
-* **Test Case ID:** TC_008
-* **Test Case Steps:**
-    1. Complete three separate visits.
-    2. For each visit, enter a different valid email address and select the "Email" checkbox.
-* **Expected Output:** Three separate emails are sent, one for each visit, without any duplication of receipts.
+**TC-004: Validate "Print" and "Email" options selected concurrently.**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  Enter a valid email address (e.g., `customer@example.com`).
+    3.  Click on the "Print Receipt" checkbox (assuming one exists).
+    4.  Click the "Send" / "Complete Visit" / "Submit" button.
+    5.  *Manually/Automated Check*: Verify that the print functionality is triggered (e.g., print dialogue appears, printer spooler shows job).
+    6.  *Manually/Automated Check*: Verify that `customer@example.com` promptly receives the service receipt email.
+*   **Expected Output:**
+    *   Both print and email functionalities are triggered and complete successfully.
+    *   Print job is initiated.
+    *   Email is sent to the specified address.
 
-**Test Case 9: Two-Factor Authentication (2FA)**  (Addresses part of TC_59)
+**TC-005: Validate "Print" option selected only.**
+*   **Steps:**
+    1.  Ensure the "Email Receipt" checkbox is *unselected*.
+    2.  Click on the "Print Receipt" checkbox.
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+    4.  *Manually/Automated Check*: Verify that the print functionality is triggered.
+    5.  *Manually/Automated Check*: Verify that *no* email is sent to any address (check system logs if possible, or ensure no email field was active).
+*   **Expected Output:**
+    *   Only print functionality is triggered.
+    *   No email is sent.
 
-* **Test Case ID:** TC_009
-* **Test Case Steps:**
-    1. Install the application.
-    2. Attempt to log in.
-* **Expected Output:** The application displays a 2FA screen requesting an OTP sent to the registered email address.
+**TC-006: Validate no option selected (neither Print nor Email).**
+*   **Steps:**
+    1.  Ensure both "Email Receipt" and "Print Receipt" checkboxes are *unselected*.
+    2.  Click the "Send" / "Complete Visit" / "Submit" button.
+    3.  *Manually/Automated Check*: Verify that no print job is initiated.
+    4.  *Manually/Automated Check*: Verify that no email is sent to any address.
+*   **Expected Output:**
+    *   Neither print nor email functionality is triggered.
+    *   No receipt is sent to the customer via these methods.
 
-**Note:**  These test cases assume a user interface with checkboxes for "Print" and "Email". Adapt the steps as necessary to match your actual UI.  The bracketed information should be filled in with specific values and timings relevant to your system.  Furthermore, consider adding test cases to handle edge cases like network interruptions during email sending.
+**TC-007: Validate pre-populated customer email is correctly displayed (ref: TC-61).**
+*   **Steps:**
+    1.  Start a visit for a customer who has an email address registered in the system (e.g., `existing.customer@example.com`).
+    2.  Complete the visit steps until the service receipt options pop-up appears.
+    3.  Observe the email input field(s) on the pop-up.
+*   **Expected Output:**
+    *   The email input field(s) on the pop-up should be pre-populated with `existing.customer@example.com`.
+    *   The pre-populated field should be editable, allowing the technician to modify or add more emails.
 
+**TC-008: Validate pre-populated email can be overridden/added to.**
+*   **Steps:**
+    1.  Follow steps 1-2 of TC-007 (customer email `existing.customer@example.com` is pre-populated).
+    2.  Click on the "Email Receipt" checkbox (if not pre-selected).
+    3.  Modify the pre-populated email to `new.customer@example.com` OR add a new email `new.customer@example.com` while keeping the existing one.
+    4.  Click the "Send" / "Complete Visit" / "Submit" button.
+    5.  *Manually/Automated Check*: Verify receipt is sent to the modified/added email(s).
+*   **Expected Output:**
+    *   The system sends the receipt to the technician-entered email(s), overriding or adding to the pre-populated one as per interaction.
+
+**TC-009: Validate prompt delivery of the email.**
+*   **Steps:**
+    1.  Follow steps 1-4 of TC-001 (single email).
+    2.  Start a timer immediately after clicking the "Send" button.
+    3.  Check the recipient's email inbox for the receipt.
+    4.  Stop the timer as soon as the email is received.
+*   **Expected Output:**
+    *   The email should be received within a predefined acceptable time limit (e.g., less than 10-15 seconds). *Note: This requires a mechanism to check email delivery time, possibly via an email API or a dummy SMTP server.*
+
+**TC-010: Validate email options are not duplicated across multiple visit processes (ref: TC-4759).**
+*   **Steps:**
+    1.  Complete a first service visit, selecting "Email Receipt" and sending to `email1@example.com`.
+    2.  Verify email1 receives the receipt.
+    3.  Start and complete a *second* separate service visit for a different customer/premise.
+    4.  Observe the service receipt options pop-up for the second visit.
+    5.  Click on the "Email Receipt" checkbox.
+    6.  Enter `email2@example.com`.
+    7.  Click the "Send" / "Complete Visit" / "Submit" button.
+    8.  Verify email2 receives the receipt.
+*   **Expected Output:**
+    *   The UI pop-up for the second visit should present the email options fresh, not pre-filled or duplicated from the first visit's selection.
+    *   The system should correctly process the email for the second visit, independent of the first.
+
+---
+
+#### B. Negative Scenarios / Error Handling
+
+**TC-011: Validate error message for invalid email format (single).**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  In the email input field, enter an invalid email address (e.g., `invalid-email`, `test@.com`, `test@com`).
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+*   **Expected Output:**
+    *   An appropriate validation error message should be displayed next to the email field or as a pop-up (e.g., "Please enter a valid email address").
+    *   The pop-up should not close, and the receipt should *not* be sent.
+
+**TC-012: Validate error message for invalid email format (multiple).**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  Enter one valid email (`valid@example.com`) and one invalid email (`invalid-email`).
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+*   **Expected Output:**
+    *   An error message should highlight the invalid email address.
+    *   The receipt should *not* be sent to *any* of the entered addresses until all are valid.
+
+**TC-013: Validate behavior when Email checkbox is selected but no email address is entered.**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  Leave the email input field(s) blank.
+    3.  Click the "Send" / "Complete Visit" / "Submit" button.
+*   **Expected Output:**
+    *   An appropriate validation error message should be displayed (e.g., "Email address cannot be empty" or "Please enter an email address").
+    *   The pop-up should not close, and the receipt should *not* be sent.
+
+**TC-014: Validate attempt to enter more than three emails.**
+*   **Steps:**
+    1.  Click on the "Email Receipt" checkbox.
+    2.  Attempt to enter a fourth email address (e.g., after entering three valid ones).
+*   **Expected Output:**
+    *   The UI should prevent the technician from entering more than three email addresses (e.g., the input field becomes disabled for further additions, or an error message appears).
+    *   No more than three emails should be processable for sending.
+
+**TC-015: Validate UI behavior if pop-up does not appear after visit completion.**
+*   **Steps:**
+    1.  Complete a service visit.
+    2.  Observe if the service receipt options pop-up appears.
+*   **Expected Output:**
+    *   The UI pop-up for service receipt options *must* appear promptly after visit completion. If it doesn't, it's a critical bug.
+
+---
+
+### Java Selenium Code Examples
+
+Generating full Selenium code for *all* test cases is extensive, as it requires a full application setup, specific locators, and robust email verification. I'll provide a skeletal structure and examples for a few key test cases, focusing on UI interaction.
+
+**Assumptions for Selenium Code:**
+*   You have a `BaseTest` class for WebDriver setup/teardown.
+*   Locators (IDs, XPaths, CSS selectors) are placeholders and would need to be identified from your actual application's UI.
+*   Email verification (receiving and checking email content) is the *most challenging* part to automate purely with Selenium. It often requires integration with email APIs (e.g., Mailosaur, Mailtrap, or a custom internal email testing tool) or setting up a local SMTP server for testing. For these examples, I'll `System.out.println` the expected email verification, indicating it's an external check.
+*   Using TestNG for annotations (`@Test`, `@BeforeClass`, `@AfterClass`).
+
+**Project Setup (Maven `pom.xml`):**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>ServiceReceiptAutomation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <selenium.version>4.15.0</selenium.version>
+        <testng.version>7.8.0</testng.version>
+        <webdrivermanager.version>5.6.1</webdrivermanager.version>
+    </properties>
+
+    <dependencies>
+        <!-- Selenium WebDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <!-- TestNG -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- WebDriverManager for easy driver setup -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+**`testng.xml` (for running tests):**
+```xml
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="ServiceReceiptAutomationSuite" verbose="1" >
+    <test name="ServiceReceiptEmailTests" >
+        <classes>
+            <class name="com.example.tests.ServiceReceiptEmailTests" />
+        </classes>
+    </test>
+</suite>
+```
+
+**`BaseTest.java` (basic setup):**
+
+```java
+package com.example.tests;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+
+public class BaseTest {
+
+    protected WebDriver driver;
+    protected String baseUrl = "https://your-app-url.com"; // Replace with your application URL
+
+    @BeforeMethod
+    public void setup() {
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get(baseUrl);
+        // Add login steps here if login is required before every test
+        // Example: login("technician_user", "password123");
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    // Helper method to simulate login - replace with actual login flow
+    protected void login(String username, String password) {
+        // Example:
+        // driver.findElement(By.id("username")).sendKeys(username);
+        // driver.findElement(By.id("password")).sendKeys(password);
+        // driver.findElement(By.id("loginButton")).click();
+        // Add explicit wait for dashboard to load
+        System.out.println("Simulating login for: " + username);
+    }
+
+    // Helper method to simulate completing a visit and getting to the pop-up
+    protected void completeVisitAndTriggerPopup() {
+        // This method would contain the actual steps to complete a visit
+        // and trigger the service receipt options pop-up.
+        // Example:
+        // driver.findElement(By.id("startVisitBtn")).click();
+        // performServiceSteps();
+        // driver.findElement(By.id("completeVisitBtn")).click();
+        // Add explicit wait for the pop-up to appear
+        System.out.println("Simulating visit completion and pop-up trigger...");
+    }
+}
+```
+
+**`ServiceReceiptEmailTests.java` (Test Cases):**
+
+```java
+package com.example.tests;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.time.Duration;
+import java.util.List;
+
+public class ServiceReceiptEmailTests extends BaseTest {
+
+    // --- Locators (PLACEHOLDERS - REPLACE WITH ACTUAL LOCATORS) ---
+    private final By EMAIL_CHECKBOX = By.id("emailReceiptCheckbox");
+    private final By PRINT_CHECKBOX = By.id("printReceiptCheckbox");
+    private final By EMAIL_INPUT_FIELD_1 = By.id("emailInput1"); // For single/first email
+    private final By EMAIL_INPUT_FIELD_ADD_BTN = By.id("addEmailBtn"); // Button to add more email fields
+    private final By EMAIL_INPUT_FIELDS_ALL = By.xpath("//input[contains(@id, 'emailInput')]"); // All email input fields
+    private final By SUBMIT_POPUP_BUTTON = By.id("submitReceiptOptions");
+    private final By POPUP_CONTAINER = By.id("serviceReceiptPopup");
+    private final By VALIDATION_MESSAGE = By.cssSelector(".validation-message"); // Generic validation message selector
+
+    // --- Helper methods for interaction ---
+    private void waitForPopupToAppear() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(POPUP_CONTAINER));
+        System.out.println("Service Receipt Pop-up appeared.");
+    }
+
+    private void clickEmailCheckbox() {
+        WebElement emailCheckbox = driver.findElement(EMAIL_CHECKBOX);
+        if (!emailCheckbox.isSelected()) {
+            emailCheckbox.click();
+        }
+        System.out.println("Clicked Email Receipt checkbox.");
+    }
+
+    private void enterEmail(String email, int fieldIndex) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        List<WebElement> emailFields = wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(EMAIL_INPUT_FIELDS_ALL, fieldIndex - 1));
+        WebElement emailField = emailFields.get(fieldIndex - 1); // 0-indexed
+        emailField.clear();
+        emailField.sendKeys(email);
+        System.out.println("Entered email: " + email + " into field " + fieldIndex);
+    }
+
+    private void submitReceiptOptions() {
+        driver.findElement(SUBMIT_POPUP_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(POPUP_CONTAINER)); // Wait for popup to disappear
+        System.out.println("Clicked Submit button on pop-up.");
+    }
+
+    // --- Test Cases ---
+
+    @Test(priority = 1, description = "TC-001: Validate sending service receipt via email to a single address.")
+    public void testSendReceiptToSingleEmail() {
+        completeVisitAndTriggerPopup();
+        waitForPopupToAppear();
+
+        clickEmailCheckbox();
+        enterEmail("customer1@example.com", 1);
+        submitReceiptOptions();
+
+        // Verification step - this would ideally integrate with an email API
+        System.out.println("Verify: Receipt promptly delivered to customer1@example.com");
+        // Example: Assert.assertTrue(emailService.hasEmailBeenReceived("customer1@example.com", "Service Receipt"), "Email not received!");
+    }
+
+    @Test(priority = 2, description = "TC-003: Validate sending service receipt via email to three addresses.")
+    public void testSendReceiptToThreeEmails() {
+        completeVisitAndTriggerPopup();
+        waitForPopupToAppear();
+
+        clickEmailCheckbox();
+
+        // Add 2 more email fields (if UI requires clicking a button)
+        driver.findElement(EMAIL_INPUT_FIELD_ADD_BTN).click();
+        driver.findElement(EMAIL_INPUT_FIELD_ADD_BTN).click();
+        
+        enterEmail("customer1@example.com", 1);
+        enterEmail("customer2@example.com", 2);
+        enterEmail("customer3@example.com", 3);
+        
+        submitReceiptOptions();
+
+        System.out.println("Verify: Receipt promptly delivered to customer1@example.com, customer2@example.com, customer3@example.com");
+        // Example: Assert.assertTrue(emailService.hasEmailBeenReceived("customer1@example.com", "Service Receipt"));
+        // Assert.assertTrue(emailService.hasEmailBeenReceived("customer2@example.com", "Service Receipt"));
+        // Assert.assertTrue(emailService.hasEmailBeenReceived("customer3@example.com", "Service Receipt"));
+    }
+
+    @Test(priority = 3, description = "TC-004: Validate 'Print' and 'Email' options selected concurrently.")
+    public void testPrintAndEmailConcurrently() {
+        completeVisitAndTriggerPopup();
+        waitForPopupToAppear();
+
+        clickEmailCheckbox();
+        enterEmail("customer@example.com", 1);
+
+        WebElement printCheckbox = driver.findElement(PRINT_CHECKBOX);
+        if (!printCheckbox.isSelected()) {
+            printCheckbox.click();
+        }
+        System.out.println("Clicked Print Receipt checkbox.");
+
+        submitReceiptOptions();
+
+        System.out.println("Verify: Print functionality triggered.");
+        System.out.println("Verify: Receipt promptly delivered to customer@example.com");
+        // Assert.assertTrue(printerService.isPrintJobInitiated(), "Print job not initiated!");
+        // Assert.assertTrue(emailService.hasEmailBeenReceived("customer@example.com", "Service Receipt"), "Email not received!");
+    }
+
+    @Test(priority = 4, description = "TC-005: Validate 'Print' option selected only.")
+    public void testPrintOnly() {
+        completeVisitAndTriggerPopup();
+        waitForPopupToAppear();
+
+        // Ensure email checkbox is not selected
+        WebElement emailCheckbox = driver.findElement(EMAIL_CHECKBOX);
+        if (emailCheckbox.isSelected()) {
+            emailCheckbox.click(); // Unselect if default is selected
+        }
+
+        WebElement printCheckbox = driver.findElement(PRINT_CHECKBOX);
+        if (!printCheckbox.isSelected()) {
+            printCheckbox.click();
+        }
+        System.out.println("Clicked Print Receipt checkbox.");
+
+        submitReceiptOptions();
+
+        System.out.println("Verify: Only Print functionality triggered. No email sent.");
+        // Assert.assertTrue(printerService.isPrintJobInitiated(), "Print job not initiated!");
+        // Assert.assertFalse(emailService.anyEmailSent(), "Email was sent unexpectedly!");
+    }
+
+    @Test(priority = 5, description = "TC-011: Validate error message for invalid email format (single).")
+    public void testInvalidEmailFormatValidation() {
+        completeVisitAndTriggerPopup();
+        waitForPopupToAppear();
+
+        clickEmailCheckbox();
+        enterEmail("invalid-email", 1); // Invalid email format
+        submitReceiptOptions();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement validationMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(VALIDATION_MESSAGE));
+
+        Assert.assertTrue(validationMsg.isDisplayed(), "Validation message not displayed for invalid email.");
+        Assert.assertTrue(validationMsg.getText().contains("valid email address") || validationMsg.getText().contains("invalid format"),
+                "Validation message content is incorrect: " + validationMsg.getText());
+        
+        // Ensure pop-up is still visible, meaning it didn't close
+        Assert.assertTrue(driver.findElement(POPUP_CONTAINER).isDisplayed(), "Pop-up closed unexpectedly after invalid email.");
+        System.out.println("Verify: No email sent due to invalid format.");
+    }
+    
+    @Test(priority = 6, description = "TC-007: Validate pre-populated customer email is correctly displayed (ref: TC-61).")
+    public void testPrePopulatedCustomerEmail() {
+        // This test case would require specific setup to simulate a customer with an email
+        // For automation, you might need a dedicated test customer or mock the data.
+        
+        // Simulating the scenario: Assume a visit with a customer email pre-exists.
+        System.out.println("Simulating a visit for a customer with pre-populated email (existing.customer@example.com)");
+        completeVisitAndTriggerPopup(); // This would now trigger the pop-up with pre-filled data
+
+        waitForPopupToAppear();
+
+        WebElement emailField = driver.findElement(EMAIL_INPUT_FIELD_1);
+        String prePopulatedEmail = emailField.getAttribute("value");
+
+        Assert.assertEquals(prePopulatedEmail, "existing.customer@example.com", 
+                            "Pre-populated email address is incorrect or not displayed.");
+        Assert.assertTrue(emailField.isEnabled(), "Pre-populated email field is not editable.");
+        System.out.println("Pre-populated email verified: " + prePopulatedEmail);
+    }
+
+    // You would add more @Test methods for the remaining test cases following similar patterns.
+}
+```
+
+This structured approach covers the test cases and provides a strong starting point for the Selenium automation, highlighting where external services (like email verification) would be integrated.
 ----------------------------------------------------
