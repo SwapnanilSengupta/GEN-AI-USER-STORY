@@ -46,7 +46,7 @@ public class DocumentQnA {
                 .project("ai-testautomation-production")
                 .location("us-central1")
                 .modelName(getProperty("Vertex.ChatModel.Latest"))
-                .maxOutputTokens(60000)
+                .maxOutputTokens(Integer.parseInt(getProperty("Vertex.ChatModel.Latest.Token")))
                 .build();
 
         // ======== Content Retriever from EmbeddingStore ========

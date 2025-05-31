@@ -1,5 +1,8 @@
 package gemini.workshop;
 
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.langchain4j.data.document.Document;
@@ -14,15 +17,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-import java.io.IOException; // Import IOException
+import java.io.IOException;
 
 public class DocumentTrainer {
 
     private PgVectorEmbeddingStore embeddingStore;
     private VertexAiEmbeddingModel embeddingModel;
-
+    private final String bucketName;
     private static Properties properties; // Declare properties here
-
     static {
         properties = new Properties();
         try (InputStream input = DocumentTrainer.class.getClassLoader()
@@ -38,7 +40,6 @@ public class DocumentTrainer {
             throw new RuntimeException("Error loading configuration.properties", ex);
         }
     }
-
     private static String getProperty(String key) {
         return properties.getProperty(key);
     }
@@ -66,48 +67,51 @@ public class DocumentTrainer {
                 .table(getProperty("pgvector.tablename"))
                 .dimension(768)
                 .build();
+
+        this.bucketName =getProperty("google.storage.bucket");
     }
 
-    public PgVectorEmbeddingStore getEmbeddingStore() {
-        return embeddingStore;
-    }
+    public void train() throws Exception {
+        Storage storage = StorageOptions.getDefaultInstance().getService();
+        Iterable<Blob> blobs = storage.list(bucketName).iterateAll();
 
-    public void train(String folderPath) throws Exception {
-        File folder = new File(folderPath);
-        //File[] pdfFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
-        File[] pdfFiles = folder.listFiles((file) -> file.getName().toLowerCase().endsWith(".pdf"));
-        if (pdfFiles != null) {
-            // ======== Ingest PDF Embeddings ========
-            EmbeddingStoreIngestor storeIngestor = EmbeddingStoreIngestor.builder()
-                    .documentSplitter(DocumentSplitters.recursive(500, 100))
-                    .embeddingModel(this.embeddingModel) // Use the instance variable
-                    .embeddingStore(this.embeddingStore) // Use the instance variable
-                    .build();
+        // ======== Ingest PDF Embeddings ========
+        EmbeddingStoreIngestor storeIngestor = EmbeddingStoreIngestor.builder()
+                .documentSplitter(DocumentSplitters.recursive(500, 100))
+                .embeddingModel(this.embeddingModel)
+                .embeddingStore(this.embeddingStore)
+                .build();
 
-            System.out.println("Processing PDF files in: " + folderPath);
-            for (File pdfFile : pdfFiles) {
-                System.out.println("Processing: " + pdfFile.getName());
-                try (InputStream inputStream = new FileInputStream(pdfFile)) {
+        System.out.println("Processing PDF files in Google Cloud Storage bucket: " + bucketName);
+        boolean foundPdf = false;
+        for (Blob pdfBlob : blobs) {
+            if (pdfBlob.getName().toLowerCase().endsWith(".pdf")) {
+                foundPdf = true;
+                String fileName = pdfBlob.getName();
+                System.out.println("Processing: " + fileName);
+                try (InputStream inputStream = new java.io.ByteArrayInputStream(pdfBlob.getContent())) {
                     ApachePdfBoxDocumentParser pdfParser = new ApachePdfBoxDocumentParser();
                     Document document = pdfParser.parse(inputStream);
                     System.out.println("Chunking and embedding...");
                     storeIngestor.ingest(document);
-                    System.out.println(pdfFile.getName() + " embedding complete.");
+                    System.out.println(fileName + " embedding complete.");
                 } catch (Exception e) {
-                    System.err.println("Error processing " + pdfFile.getName() + ": " + e.getMessage());
+                    System.err.println("Error processing " + fileName + ": " + e.getMessage());
                     // Optionally re-throw the exception if processing should stop on error
                     // throw e;
                 }
             }
-            System.out.println("All PDF files in the folder processed.");
+        }
+
+        if (!foundPdf) {
+            System.out.println("No PDF files found in Google Cloud Storage bucket: " + bucketName);
         } else {
-            System.out.println("No PDF files found in: " + folderPath);
+            System.out.println("All PDF files in the bucket processed.");
         }
     }
 
     public static void main(String[] args) throws Exception {
-        String pdfFolderPath = getProperty("pdf.folder"); // Replace with your folder path
         DocumentTrainer trainer = new DocumentTrainer(); // Create an instance of DocumentTrainer
-        trainer.train(pdfFolderPath); // Call the non-static train method
+        trainer.train();
     }
 }

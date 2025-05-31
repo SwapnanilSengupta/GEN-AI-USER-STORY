@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.cloud.functions:functions-framework-api:1.1.4'
     implementation 'com.zaxxer:HikariCP:6.3.0'
     implementation 'dev.langchain4j:langchain4j-pgvector:0.31.0'
+    implementation 'com.google.cloud:google-cloud-storage:2.52.3'
     
     
 
