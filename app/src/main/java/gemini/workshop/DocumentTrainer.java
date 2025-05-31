@@ -13,8 +13,6 @@ import dev.langchain4j.model.vertexai.VertexAiEmbeddingModel;
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.io.IOException;
